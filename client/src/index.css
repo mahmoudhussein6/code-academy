@@ -1,0 +1,111 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Cairo', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  }
+
+  code, pre, kbd, samp {
+    font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    direction: ltr !important;
+    text-align: left !important;
+    unicode-bidi: isolate;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Code highlight override */
+pre code {
+  display: block;
+  overflow-x: auto;
+  padding: 1.25rem;
+  background: #090d16;
+  border-radius: 0.75rem;
+  color: #e2e8f0;
+  line-height: 1.7;
+}
+
+/* Inline code tag */
+:not(pre) > code {
+  background-color: rgba(59, 130, 246, 0.15);
+  color: #93c5fd;
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.35rem;
+  font-size: 0.9em;
+  font-weight: 500;
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  display: inline-block;
+}
+
+@layer base {
+  body {
+    font-family: 'Cairo', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  }
+
+  code, pre, kbd, samp {
+    font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    direction: ltr !important;
+    text-align: left !important;
+    unicode-bidi: isolate;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Code highlight override */
+pre code {
+  display: block;
+  overflow-x: auto;
+  padding: 1.25rem;
+  background: #090d16;
+  border-radius: 0.75rem;
+  color: #e2e8f0;
+  line-height: 1.7;
+}
+
+/* Inline code tag */
+:not(pre) > code {
+  background-color: rgba(59, 130, 246, 0.15);
+  color: #93c5fd;
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.35rem;
+  font-size: 0.9em;
+  font-weight: 500;
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  display: inline-block;
+}
