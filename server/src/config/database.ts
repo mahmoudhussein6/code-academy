@@ -1,3 +1,4 @@
+
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 
@@ -6,7 +7,6 @@ dotenv.config();
 let isConnected = false;
 
 export const connectDB = async (): Promise<boolean> => {
-  // Support MONGODB_URI, MONGODB_URL, MONGO_URL, or Mongob_url from .env
   const uri =
     process.env.MONGODB_URI ||
     process.env.MONGODB_URL ||
@@ -15,27 +15,24 @@ export const connectDB = async (): Promise<boolean> => {
     (process.env as any).Mongob_url ||
     'mongodb://127.0.0.1:27017/code_academy';
 
-  // Check if it's an unconfigured placeholder
+  // Reject only the placeholder URI
   if (uri.includes('YOUR_CLUSTER')) {
-    console.warn(
-      '⚠️ ملاحظة: يحتوي رابط MongoDB في .env على رمز افتراضي (YOUR_CLUSTER). يرجى استبداله برابط كلاستر Atlas الفعلي الخاص بك.'
-    );
-    console.warn('⚡ يعمل الخادم حالياً بنظام الذاكرة السريعة (In-Memory Fallback) لضمان استمرار التطوير بسلاسة.');
+    console.warn('⚠️ MongoDB URI still contains the placeholder YOUR_CLUSTER.');
     isConnected = false;
     return false;
   }
 
   try {
-    // Attempt connection with 5s timeout
     await mongoose.connect(uri, {
-      serverSelectionTimeoutMS: 5000,
+      serverSelectionTimeoutMS: 10000,
     });
+
     isConnected = true;
     console.log('✅ تم الاتصال بقاعدة بيانات MongoDB بنجاح!');
+
     return true;
   } catch (error: any) {
-    console.warn('⚠️ تعذر الاتصال بـ MongoDB:', error.message);
-    console.warn('⚡ تم تفعيل مخزن الذاكرة المحلي (In-Memory Fallback) لتشغيل المنصة بدون توقف.');
+    console.error('❌ تعذر الاتصال بـ MongoDB:', error.message);
     isConnected = false;
     return false;
   }
@@ -44,4 +41,3 @@ export const connectDB = async (): Promise<boolean> => {
 export const isDbConnected = (): boolean => isConnected;
 
 export default connectDB;
-
