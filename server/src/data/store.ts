@@ -43,7 +43,31 @@ export const initSeedData = async () => {
         await CourseModel.insertMany(coursesData);
         await LessonModel.insertMany(lessonsData);
         console.log('✅ MongoDB Seed completed successfully!');
+        return;
       }
+
+      const updatedCourses = coursesData.filter((course) =>
+        ['html-fundamentals', 'css-fundamentals'].includes(course.slug)
+      );
+      if (updatedCourses.length !== 2) {
+        throw new Error('HTML and CSS course data is required for curriculum synchronization');
+      }
+
+      for (const course of updatedCourses) {
+        await CourseModel.updateOne({ slug: course.slug }, { $set: course }, { upsert: true });
+      }
+
+      await LessonModel.bulkWrite(
+        lessonsData
+          .filter((lesson) => updatedCourses.some((course) => course.slug === lesson.courseSlug))
+          .map((lesson) => ({
+            updateOne: {
+              filter: { slug: lesson.slug },
+              update: { $set: lesson },
+              upsert: true,
+            },
+          }))
+      );
     } catch (err) {
       console.error('Error seeding MongoDB:', err);
     }
@@ -192,4 +216,3 @@ export const getStore = {
     return item;
   },
 };
-
