@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Play, RotateCcw, Eye, EyeOff, Terminal, Sparkles, MonitorPlay } from 'lucide-react';
 import { IInteractiveExercise } from '../types';
+import { useLanguage } from '../context/LanguageContext';
 
 interface CodePlaygroundProps {
   exercise: IInteractiveExercise;
 }
 
 export const CodePlayground: React.FC<CodePlaygroundProps> = ({ exercise }) => {
+  const { language, direction, t } = useLanguage();
   const [htmlCode, setHtmlCode] = useState(exercise.initialHtml || '');
   const [cssCode, setCssCode] = useState(exercise.initialCss || '');
   const [jsCode, setJsCode] = useState(exercise.initialJs || '');
@@ -51,7 +53,7 @@ export const CodePlayground: React.FC<CodePlaygroundProps> = ({ exercise }) => {
 
   const previewSource = `
     <!DOCTYPE html>
-    <html dir="rtl" lang="ar">
+    <html dir="${direction}" lang="${language}">
       <head>
         <meta charset="utf-8">
         <style>
@@ -110,7 +112,7 @@ export const CodePlayground: React.FC<CodePlaygroundProps> = ({ exercise }) => {
       <div className="bg-gradient-to-r from-indigo-950/80 to-slate-900 p-5 border-b border-slate-800">
         <div className="flex items-center gap-2.5 text-indigo-400 font-bold text-sm mb-1">
           <Terminal className="w-4 h-4" />
-          <span>مختبر التطبيق العملي التفاعلي (Interactive Sandbox)</span>
+          <span>{t('مختبر التطبيق العملي التفاعلي (Interactive Sandbox)')}</span>
         </div>
         <p className="text-slate-300 text-sm leading-relaxed">{exercise.instructions}</p>
       </div>
@@ -161,11 +163,11 @@ export const CodePlayground: React.FC<CodePlaygroundProps> = ({ exercise }) => {
               <button
                 type="button"
                 onClick={handleReset}
-                title="إعادة تعيين الكود الأصلي"
+                title={t('إعادة تعيين الكود الأصلي')}
                 className="flex items-center gap-1 text-slate-400 hover:text-slate-200 px-2 py-1 rounded hover:bg-slate-800 transition cursor-pointer"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
-                <span className="text-xs">إعادة ضبط</span>
+                <span className="text-xs">{t('إعادة ضبط')}</span>
               </button>
               {exercise.solution && (
                 <button
@@ -174,7 +176,7 @@ export const CodePlayground: React.FC<CodePlaygroundProps> = ({ exercise }) => {
                   className="flex items-center gap-1 text-indigo-400 hover:text-indigo-300 px-2 py-1 rounded hover:bg-indigo-950/40 transition cursor-pointer"
                 >
                   {showSolution ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                  <span className="text-xs">{showSolution ? 'إخفاء الحل' : 'عرض الحل النموذجي'}</span>
+                  <span className="text-xs">{showSolution ? t('إخفاء الحل') : t('عرض الحل النموذجي')}</span>
                 </button>
               )}
             </div>
@@ -184,7 +186,7 @@ export const CodePlayground: React.FC<CodePlaygroundProps> = ({ exercise }) => {
           {showSolution && exercise.solution && (
             <div className="p-3 bg-emerald-950/40 border-b border-emerald-800/60 text-xs text-emerald-300 font-mono" dir="ltr">
               <div className="font-bold text-emerald-400 mb-1 flex items-center gap-1">
-                <Sparkles className="w-3.5 h-3.5" /> الحل المقترح:
+                <Sparkles className="w-3.5 h-3.5" /> {t('الحل المقترح:')}
               </div>
               <pre className="whitespace-pre-wrap">{exercise.solution}</pre>
             </div>
@@ -199,7 +201,7 @@ export const CodePlayground: React.FC<CodePlaygroundProps> = ({ exercise }) => {
                 spellCheck={false}
                 dir="ltr"
                 className="w-full h-full min-h-[220px] bg-transparent text-emerald-400 font-mono text-sm resize-none focus:outline-none leading-relaxed"
-                placeholder="اكتب كود HTML هنا..."
+                placeholder={t('اكتب كود HTML هنا...')}
               />
             )}
             {activeTab === 'css' && (
@@ -209,7 +211,7 @@ export const CodePlayground: React.FC<CodePlaygroundProps> = ({ exercise }) => {
                 spellCheck={false}
                 dir="ltr"
                 className="w-full h-full min-h-[220px] bg-transparent text-sky-400 font-mono text-sm resize-none focus:outline-none leading-relaxed"
-                placeholder="اكتب كود CSS هنا..."
+                placeholder={t('اكتب كود CSS هنا...')}
               />
             )}
             {activeTab === 'js' && (
@@ -219,7 +221,7 @@ export const CodePlayground: React.FC<CodePlaygroundProps> = ({ exercise }) => {
                 spellCheck={false}
                 dir="ltr"
                 className="w-full h-full min-h-[220px] bg-transparent text-amber-300 font-mono text-sm resize-none focus:outline-none leading-relaxed"
-                placeholder="اكتب كود JavaScript هنا..."
+                placeholder={t('اكتب كود JavaScript هنا...')}
               />
             )}
           </div>
@@ -240,7 +242,7 @@ export const CodePlayground: React.FC<CodePlaygroundProps> = ({ exercise }) => {
                 }`}
               >
                 <MonitorPlay className="w-3.5 h-3.5 text-emerald-400" />
-                <span>المعاينة المرئية</span>
+                <span>{t('المعاينة المرئية')}</span>
               </button>
 
               <button
@@ -253,7 +255,7 @@ export const CodePlayground: React.FC<CodePlaygroundProps> = ({ exercise }) => {
                 }`}
               >
                 <Terminal className="w-3.5 h-3.5 text-amber-400" />
-                <span>الطرفية (Console)</span>
+                <span>{t('الطرفية (Console)')}</span>
                 {logs.length > 0 && (
                   <span className="w-4 h-4 rounded-full bg-indigo-600 text-[10px] text-white flex items-center justify-center font-mono">
                     {logs.length}
@@ -268,7 +270,7 @@ export const CodePlayground: React.FC<CodePlaygroundProps> = ({ exercise }) => {
               className="flex items-center gap-1.5 px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg shadow transition cursor-pointer text-xs"
             >
               <Play className="w-3.5 h-3.5 fill-white" />
-              <span>تشغيل الكود</span>
+              <span>{t('تشغيل الكود')}</span>
             </button>
           </div>
 
@@ -298,7 +300,7 @@ export const CodePlayground: React.FC<CodePlaygroundProps> = ({ exercise }) => {
                   </button>
                 </div>
                 {logs.length === 0 ? (
-                  <p className="text-slate-600 italic pt-2">No logs printed yet. Run code with console.log(...) to see output.</p>
+                  <p className="text-slate-600 italic pt-2">{t('No logs printed yet. Run code with console.log(...) to see output.')}</p>
                 ) : (
                   logs.map((log, index) => (
                     <div

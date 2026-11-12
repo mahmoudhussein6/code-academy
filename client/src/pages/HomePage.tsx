@@ -23,8 +23,10 @@ import {
 } from 'lucide-react';
 import { apiService } from '../lib/api';
 import { ProgressBar } from '../components/ProgressBar';
+import { useLanguage } from '../context/LanguageContext';
 
 export const HomePage: React.FC = () => {
+  const { t } = useLanguage();
   const { data: paths = [], isLoading } = useQuery({
     queryKey: ['paths'],
     queryFn: () => apiService.getPaths(),
@@ -46,68 +48,68 @@ export const HomePage: React.FC = () => {
     {
       slug: 'html-fundamentals',
       order: 1,
-      title: '1. أساسيات HTML',
+      title: t('1. أساسيات HTML'),
       shortTitle: 'HTML Fundamentals',
-      desc: 'بناء هيكل صفحات الويب وتنظيم المحتوى.',
+      desc: t('بناء هيكل صفحات الويب وتنظيم المحتوى.'),
       topics: 'Elements · Attributes · Forms · Semantic HTML',
       icon: <FileCode className="w-5 h-5 text-orange-400" />,
       color: 'border-orange-500/30 hover:border-orange-500/70',
-      badge: 'الخطوة الأولى',
+      badge: t('الخطوة الأولى'),
     },
     {
       slug: 'css-fundamentals',
       order: 2,
-      title: '2. أساسيات CSS',
+      title: t('2. أساسيات CSS'),
       shortTitle: 'CSS Fundamentals',
-      desc: 'تنسيق وتصميم صفحات الويب بأناقة وتجاوب.',
+      desc: t('تنسيق وتصميم صفحات الويب بأناقة وتجاوب.'),
       topics: 'Selectors · Box Model · Flexbox · Grid · Responsive',
       icon: <Palette className="w-5 h-5 text-blue-400" />,
       color: 'border-blue-500/30 hover:border-blue-500/70',
-      badge: 'التصميم والتخطيط',
+      badge: t('التصميم والتخطيط'),
     },
     {
       slug: 'javascript-fundamentals',
       order: 3,
-      title: '3. أساسيات JavaScript',
+      title: t('3. أساسيات JavaScript'),
       shortTitle: 'JavaScript Fundamentals',
-      desc: 'برمجة التفاعل والمنطق ودوال الـ DOM والعمليات اللاتزامنية.',
+      desc: t('برمجة التفاعل والمنطق ودوال الـ DOM والعمليات اللاتزامنية.'),
       topics: 'Variables · Functions · Arrays · Objects · DOM · Async',
       icon: <Terminal className="w-5 h-5 text-amber-400" />,
       color: 'border-amber-500/30 hover:border-amber-500/70',
-      badge: 'لغة البرمجة الحية',
+      badge: t('لغة البرمجة الحية'),
     },
     {
       slug: 'git-github',
       order: 4,
-      title: '4. نظام Git & GitHub',
+      title: t('4. نظام Git & GitHub'),
       shortTitle: 'Git & GitHub',
-      desc: 'إدارة الأكواد وتتبع الإصدارات والعمل الجماعي.',
+      desc: t('إدارة الأكواد وتتبع الإصدارات والعمل الجماعي.'),
       topics: 'Git · Branches · Commits · GitHub',
       icon: <GitBranch className="w-5 h-5 text-rose-400" />,
       color: 'border-rose-500/30 hover:border-rose-500/70',
-      badge: 'أداة المحترفين',
+      badge: t('أداة المحترفين'),
     },
     {
       slug: 'typescript',
       order: 5,
-      title: '5. لغة TypeScript',
+      title: t('5. لغة TypeScript'),
       shortTitle: 'TypeScript',
-      desc: 'كتابة كود JavaScript آمن بمساعدة نظام الأنواع الثابتة.',
+      desc: t('كتابة كود JavaScript آمن بمساعدة نظام الأنواع الثابتة.'),
       topics: 'Types · Interfaces · Generics',
       icon: <ShieldCheck className="w-5 h-5 text-sky-400" />,
       color: 'border-sky-500/30 hover:border-sky-500/70',
-      badge: 'البرمجة الموثوقة',
+      badge: t('البرمجة الموثوقة'),
     },
     {
       slug: 'react-development',
       order: 6,
-      title: '6. تطوير تطبيقات React',
+      title: t('6. تطوير تطبيقات React'),
       shortTitle: 'React Development',
-      desc: 'بناء تطبيقات واجهات المستخدم الحديثة وقابلة للتوسع.',
+      desc: t('بناء تطبيقات واجهات المستخدم الحديثة وقابلة للتوسع.'),
       topics: 'Components · Props · Hooks · Routing · State Management',
       icon: <Atom className="w-5 h-5 text-cyan-400" />,
       color: 'border-cyan-500/30 hover:border-cyan-500/70',
-      badge: 'المحطة الختامية',
+      badge: t('المحطة الختامية'),
     },
   ];
 
@@ -122,22 +124,21 @@ export const HomePage: React.FC = () => {
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900 border border-indigo-500/30 text-indigo-300 text-xs sm:text-sm font-medium shadow-inner animate-in fade-in slide-in-from-top-4">
             <Sparkles className="w-4 h-4 text-indigo-400" />
-            <span>منصة عربية لتعليم تطوير الويب من الصفر حتى الاحتراف</span>
+            <span>{t('منصة عربية لتعليم تطوير الويب من الصفر حتى الاحتراف')}</span>
           </div>
 
           {/* Heading */}
           <h1 className="text-4xl sm:text-6xl font-black text-white tracking-tight leading-[1.25] sm:leading-[1.2]">
-            تعلم تطوير الويب من الصفر
+            {t('تعلم تطوير الويب من الصفر')}
             <br />
             <span className="bg-gradient-to-r from-indigo-400 via-blue-400 to-emerald-400 bg-clip-text text-transparent">
-              بمسار مقالي تطبيقي واضح
+              {t('بمسار مقالي تطبيقي واضح')}
             </span>
           </h1>
 
           {/* Description */}
           <p className="max-w-2xl mx-auto text-base sm:text-lg text-slate-300 leading-relaxed font-normal">
-            أي شخص ليس لديه أي خبرة برمجية سابقة يستطيع دخول المنصة، اتباع خريطة واضحة، قراءة الدروس المبسطة،
-            تطبيق الأكواد في المتصفح، ومتابعة تقدمه حتى يصبح مطور واجهات محترف (Frontend Developer).
+            {t('أي شخص ليس لديه أي خبرة برمجية سابقة يستطيع دخول المنصة، اتباع خريطة واضحة، قراءة الدروس المبسطة، تطبيق الأكواد في المتصفح، ومتابعة تقدمه حتى يصبح مطور واجهات محترف (Frontend Developer).')}
           </p>
 
           {/* CTA Buttons */}
@@ -146,7 +147,7 @@ export const HomePage: React.FC = () => {
               to="/paths/frontend-development"
               className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-indigo-600 via-blue-600 to-indigo-600 hover:from-indigo-500 hover:to-blue-500 text-white font-bold text-base rounded-2xl shadow-xl shadow-indigo-600/25 transition transform hover:-translate-y-0.5 flex items-center justify-center gap-3 cursor-pointer"
             >
-              <span>ابدأ مسار الفرونت إند مجاناً</span>
+              <span>{t('ابدأ مسار الفرونت إند مجاناً')}</span>
               <ArrowLeft className="w-5 h-5" />
             </Link>
 
@@ -155,7 +156,7 @@ export const HomePage: React.FC = () => {
               className="w-full sm:w-auto px-7 py-3.5 bg-slate-900 hover:bg-slate-800 text-slate-200 font-semibold text-base rounded-2xl border border-slate-800 transition flex items-center justify-center gap-2"
             >
               <Compass className="w-5 h-5 text-slate-400" />
-              <span>استكشف الخريطة التعليمية</span>
+              <span>{t('استكشف الخريطة التعليمية')}</span>
             </a>
           </div>
 
@@ -163,19 +164,19 @@ export const HomePage: React.FC = () => {
           <div className="pt-10 grid grid-cols-2 md:grid-cols-4 gap-4 text-center border-t border-slate-800/60 max-w-4xl mx-auto">
             <div className="p-3">
               <p className="text-2xl sm:text-3xl font-extrabold text-white">100%</p>
-              <p className="text-xs sm:text-sm text-slate-400 mt-1">محتوى عربي دقيق ومبسط</p>
+              <p className="text-xs sm:text-sm text-slate-400 mt-1">{t('محتوى عربي دقيق ومبسط')}</p>
             </div>
             <div className="p-3">
               <p className="text-2xl sm:text-3xl font-extrabold text-indigo-400">6</p>
-              <p className="text-xs sm:text-sm text-slate-400 mt-1">كورسات متسلسلة للفرونت إند</p>
+              <p className="text-xs sm:text-sm text-slate-400 mt-1">{t('كورسات متسلسلة للفرونت إند')}</p>
             </div>
             <div className="p-3">
-              <p className="text-2xl sm:text-3xl font-extrabold text-emerald-400">مقالي + تفاعلي</p>
-              <p className="text-xs sm:text-sm text-slate-400 mt-1">قراءة عميقة وتطبيق فوري</p>
+              <p className="text-2xl sm:text-3xl font-extrabold text-emerald-400">{t('مقالي + تفاعلي')}</p>
+              <p className="text-xs sm:text-sm text-slate-400 mt-1">{t('قراءة عميقة وتطبيق فوري')}</p>
             </div>
             <div className="p-3">
-              <p className="text-2xl sm:text-3xl font-extrabold text-sky-400">اختبارات فهم</p>
-              <p className="text-xs sm:text-sm text-slate-400 mt-1">للتأكد من استيعابك لكل درس</p>
+              <p className="text-2xl sm:text-3xl font-extrabold text-sky-400">{t('اختبارات فهم')}</p>
+              <p className="text-xs sm:text-sm text-slate-400 mt-1">{t('للتأكد من استيعابك لكل درس')}</p>
             </div>
           </div>
         </div>
@@ -187,13 +188,13 @@ export const HomePage: React.FC = () => {
           <div className="max-w-3xl mb-8">
             <div className="flex items-center gap-2 text-indigo-400 text-xs font-bold uppercase tracking-wider mb-2">
               <Layers className="w-4 h-4" />
-              <span>هيكلية التعلم الذكية</span>
+              <span>{t('هيكلية التعلم الذكية')}</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3">
-              كيف صممنا الخريطة لتضمن عدم تشتتك؟
+              {t('كيف صممنا الخريطة لتضمن عدم تشتتك؟')}
             </h2>
             <p className="text-slate-400 text-sm leading-relaxed">
-              فصلنا المسار التعليمي إلى مستويات هرمية واضحة، حتى تعرف في أي لحظة أين أنت وما هي خطوتك التالية:
+              {t('فصلنا المسار التعليمي إلى مستويات هرمية واضحة، حتى تعرف في أي لحظة أين أنت وما هي خطوتك التالية:')}
             </p>
           </div>
 
@@ -204,7 +205,7 @@ export const HomePage: React.FC = () => {
               </div>
               <h3 className="text-base font-bold text-white">Learning Path</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
-                رحلة تعليمية متكاملة تحقق هدفاً وظيفياً كبيراً (مثل Frontend Developer).
+                {t('رحلة تعليمية متكاملة تحقق هدفاً وظيفياً كبيراً (مثل Frontend Developer).')}
               </p>
             </div>
 
@@ -214,7 +215,7 @@ export const HomePage: React.FC = () => {
               </div>
               <h3 className="text-base font-bold text-white">Course</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
-                مادة أو تقنية محددة داخل الرحلة (مثل HTML أو JavaScript أو React).
+                {t('مادة أو تقنية محددة داخل الرحلة (مثل HTML أو JavaScript أو React).')}
               </p>
             </div>
 
@@ -224,7 +225,7 @@ export const HomePage: React.FC = () => {
               </div>
               <h3 className="text-base font-bold text-white">Module</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
-                فصل موضوعي داخل الكورس يجمع المفاهيم المترابطة (مثل نماذج الإدخال أو Flexbox).
+                {t('فصل موضوعي داخل الكورس يجمع المفاهيم المترابطة (مثل نماذج الإدخال أو Flexbox).')}
               </p>
             </div>
 
@@ -234,7 +235,7 @@ export const HomePage: React.FC = () => {
               </div>
               <h3 className="text-base font-bold text-white">Lesson</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
-                مقال تطبيقي مركز، تقرأه في 8 دقائق، مع تجربة الكود واختبار سريع.
+                {t('مقال تطبيقي مركز، تقرأه في 8 دقائق، مع تجربة الكود واختبار سريع.')}
               </p>
             </div>
           </div>
@@ -247,13 +248,13 @@ export const HomePage: React.FC = () => {
           <div>
             <div className="inline-flex items-center gap-2 text-emerald-400 text-xs font-bold uppercase tracking-wider mb-2">
               <Zap className="w-4 h-4" />
-              <span>المسار الأساسي المتاح الآن (Primary Path)</span>
+              <span>{t('المسار الأساسي المتاح الآن (Primary Path)')}</span>
             </div>
             <h2 className="text-2xl sm:text-4xl font-black text-white">
-              مسار تطوير واجهات المستخدم (Frontend Development)
+              {t('مسار تطوير واجهات المستخدم (Frontend Development)')}
             </h2>
             <p className="text-slate-400 text-sm mt-1 max-w-2xl">
-              6 كورسات أساسية مرتبة بعناية فائقة. ندرج Git & GitHub كجزء أساسي ونتعلم TypeScript قبل React المتقدم.
+              {t('6 كورسات أساسية مرتبة بعناية فائقة. ندرج Git & GitHub كجزء أساسي ونتعلم TypeScript قبل React المتقدم.')}
             </p>
           </div>
 
@@ -261,7 +262,7 @@ export const HomePage: React.FC = () => {
             to="/paths/frontend-development"
             className="inline-flex items-center gap-2 text-sm font-semibold text-indigo-400 hover:text-indigo-300"
           >
-            <span>استعراض المنهج بالكامل</span>
+            <span>{t('استعراض المنهج بالكامل')}</span>
             <ArrowLeft className="w-4 h-4" />
           </Link>
         </div>
@@ -297,10 +298,10 @@ export const HomePage: React.FC = () => {
               <div className="pt-6 mt-6 border-t border-slate-800/80">
                 <p className="text-xs font-medium text-slate-400 flex items-center gap-1.5 mb-3">
                   <BookOpen className="w-3.5 h-3.5 text-indigo-400" />
-                  <span>المواضيع: {course.topics}</span>
+                  <span>{t('المواضيع:')} {course.topics}</span>
                 </p>
                 <div className="flex items-center justify-between text-xs text-indigo-400 font-semibold group-hover:underline">
-                  <span>دخول الكورس وتصفح الدروس</span>
+                  <span>{t('دخول الكورس وتصفح الدروس')}</span>
                   <ArrowLeft className="w-4 h-4 transform group-hover:-translate-x-1 transition" />
                 </div>
               </div>
@@ -315,13 +316,13 @@ export const HomePage: React.FC = () => {
           <div className="max-w-3xl mb-8">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-950/70 border border-indigo-700/50 text-indigo-300 text-xs font-bold mb-3">
               <Server className="w-3.5 h-3.5" />
-              <span>التوسع المستقبلي (Future Expansion)</span>
+              <span>{t('التوسع المستقبلي (Future Expansion)')}</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-black text-white mb-2">
-              مسار تطوير الواجهات الخلفية (Backend Development)
+              {t('مسار تطوير الواجهات الخلفية (Backend Development)')}
             </h2>
             <p className="text-slate-400 text-sm leading-relaxed">
-              الامتداد الطبيعي بعد احتراف الفرونت إند لتصبح مبرمج فول ستاك (Full Stack Web Developer).
+              {t('الامتداد الطبيعي بعد احتراف الفرونت إند لتصبح مبرمج فول ستاك (Full Stack Web Developer).')}
             </p>
           </div>
 
@@ -342,7 +343,7 @@ export const HomePage: React.FC = () => {
                   {item.icon}
                 </div>
                 <span className="text-xs font-bold text-slate-200">{item.title}</span>
-                <span className="text-[10px] text-slate-500 font-medium">قريباً</span>
+                <span className="text-[10px] text-slate-500 font-medium">{t('قريباً')}</span>
               </div>
             ))}
           </div>
@@ -353,10 +354,10 @@ export const HomePage: React.FC = () => {
       <section className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="text-center max-w-2xl mx-auto mb-12">
           <h2 className="text-2xl sm:text-3xl font-extrabold text-white mb-3">
-            لماذا التعلم بالمقالات المكتوبة (Article-Based)؟
+            {t('لماذا التعلم بالمقالات المكتوبة (Article-Based)؟')}
           </h2>
           <p className="text-slate-400 text-sm">
-            صممنا الأكاديمية لتكون المكان الأسرع والأكثر كفاءة لاكتساب المهارات الحقيقية دون إضاعة الوقت.
+            {t('صممنا الأكاديمية لتكون المكان الأسرع والأكثر كفاءة لاكتساب المهارات الحقيقية دون إضاعة الوقت.')}
           </p>
         </div>
 
@@ -365,9 +366,9 @@ export const HomePage: React.FC = () => {
             <div className="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold">
               ⚡
             </div>
-            <h3 className="text-lg font-bold text-white">سرعة مضاعفة 3x</h3>
+            <h3 className="text-lg font-bold text-white">{t('سرعة مضاعفة 3x')}</h3>
             <p className="text-sm text-slate-400 leading-relaxed">
-              قراءة مقال احترافي تستغرق 8 دقائق فقط وتمنحك تركيزاً أعلى بكثير من مشاهدة فيديو مدته ساعة مليء بالحشو.
+              {t('قراءة مقال احترافي تستغرق 8 دقائق فقط وتمنحك تركيزاً أعلى بكثير من مشاهدة فيديو مدته ساعة مليء بالحشو.')}
             </p>
           </div>
 
@@ -375,9 +376,9 @@ export const HomePage: React.FC = () => {
             <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
               💻
             </div>
-            <h3 className="text-lg font-bold text-white">نسخ وتجربة الكود فوراً</h3>
+            <h3 className="text-lg font-bold text-white">{t('نسخ وتجربة الكود فوراً')}</h3>
             <p className="text-sm text-slate-400 leading-relaxed">
-              كل الأكواد مكتوبة بوضوح بنظام Highlighting مع زر نسخ فوري ومختبر كود تفاعلي داخل نفس الصفحة.
+              {t('كل الأكواد مكتوبة بوضوح بنظام Highlighting مع زر نسخ فوري ومختبر كود تفاعلي داخل نفس الصفحة.')}
             </p>
           </div>
 
@@ -385,9 +386,9 @@ export const HomePage: React.FC = () => {
             <div className="w-12 h-12 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center font-bold">
               📚
             </div>
-            <h3 className="text-lg font-bold text-white">مرجع دائم للبحث</h3>
+            <h3 className="text-lg font-bold text-white">{t('مرجع دائم للبحث')}</h3>
             <p className="text-sm text-slate-400 leading-relaxed">
-              المقالات يسهل العودة إليها والبحث في فقراتها واسترجاع أي معلومة في ثوانٍ أثناء بناء مشاريعك الشخصية.
+              {t('المقالات يسهل العودة إليها والبحث في فقراتها واسترجاع أي معلومة في ثوانٍ أثناء بناء مشاريعك الشخصية.')}
             </p>
           </div>
         </div>
@@ -398,17 +399,17 @@ export const HomePage: React.FC = () => {
         <div className="bg-gradient-to-r from-indigo-900/70 via-blue-900/50 to-slate-900 border border-indigo-500/30 rounded-3xl p-8 sm:p-12 text-center space-y-6 shadow-2xl relative overflow-hidden">
           <div className="max-w-2xl mx-auto space-y-3">
             <h2 className="text-2xl sm:text-4xl font-black text-white">
-              جاهز لكتابة أول سطر كود اليوم؟
+              {t('جاهز لكتابة أول سطر كود اليوم؟')}
             </h2>
             <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
-              المسار مجاني 100% وموجه للمبتدئين تماماً. ابدأ من الدرس الأول في أساسيات HTML الآن.
+              {t('المسار مجاني 100% وموجه للمبتدئين تماماً. ابدأ من الدرس الأول في أساسيات HTML الآن.')}
             </p>
           </div>
           <Link
             to="/learn/html-fundamentals/what-is-html-and-web-basics"
             className="inline-flex items-center gap-2 px-8 py-3.5 bg-white hover:bg-slate-100 text-slate-950 font-extrabold text-base rounded-2xl shadow-xl transition cursor-pointer"
           >
-            <span>ابدأ الدرس الأول الآن مجاناً</span>
+            <span>{t('ابدأ الدرس الأول الآن مجاناً')}</span>
             <ArrowLeft className="w-5 h-5 text-indigo-600" />
           </Link>
         </div>
@@ -416,4 +417,3 @@ export const HomePage: React.FC = () => {
     </div>
   );
 };
-

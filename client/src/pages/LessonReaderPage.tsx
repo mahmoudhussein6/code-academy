@@ -20,11 +20,14 @@ import { apiService } from '../lib/api';
 import { MarkdownRenderer } from '../components/MarkdownRenderer';
 import { CodePlayground } from '../components/CodePlayground';
 import { LessonQuiz } from '../components/LessonQuiz';
+import { useLanguage } from '../context/LanguageContext';
+import { localizeLesson, localizeLessonSummary, localizeLessonTitle } from '../lib/lessonTranslations';
 
 export const LessonReaderPage: React.FC = () => {
   const { courseSlug = '', lessonSlug = '' } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { language, t } = useLanguage();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [copiedShare, setCopiedShare] = useState(false);
 
@@ -54,7 +57,7 @@ export const LessonReaderPage: React.FC = () => {
     return (
       <div className="max-w-4xl mx-auto px-4 py-24 text-center text-slate-400">
         <div className="inline-block w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-4" />
-        <p>جارٍ تحميل المقال التعليمي...</p>
+        <p>{t('جارٍ تحميل المقال التعليمي...')}</p>
       </div>
     );
   }
@@ -62,16 +65,34 @@ export const LessonReaderPage: React.FC = () => {
   if (error || !data || !data.lesson) {
     return (
       <div className="max-w-md mx-auto px-4 py-24 text-center">
-        <h2 className="text-xl font-bold text-white mb-2">الدرس غير متوفر</h2>
-        <p className="text-slate-400 text-sm mb-6">الدرس المطلوب غير موجود أو تم نقله</p>
+        <h2 className="text-xl font-bold text-white mb-2">{t('الدرس غير متوفر')}</h2>
+        <p className="text-slate-400 text-sm mb-6">{t('الدرس المطلوب غير موجود أو تم نقله')}</p>
         <Link to="/paths/frontend-development" className="text-indigo-400 hover:underline text-sm font-semibold">
-          العودة لخريطة المسار
+          {t('العودة لخريطة المسار')}
         </Link>
       </div>
     );
   }
 
-  const { lesson, isCompleted, course, navigation } = data;
+  const { lesson: sourceLesson, isCompleted, course, navigation } = data;
+  const lesson = localizeLesson(sourceLesson, language);
+  const quiz = lesson.quiz
+    ? {
+        ...lesson.quiz,
+        question: t(lesson.quiz.question),
+        options: lesson.quiz.options.map(t),
+        explanation: t(lesson.quiz.explanation),
+      }
+    : undefined;
+  const exercise = lesson.interactiveExercise
+    ? {
+        ...lesson.interactiveExercise,
+        instructions: t(lesson.interactiveExercise.instructions),
+        solution: lesson.interactiveExercise.solution
+          ? t(lesson.interactiveExercise.solution)
+          : undefined,
+      }
+    : undefined;
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -88,22 +109,22 @@ export const LessonReaderPage: React.FC = () => {
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="lg:hidden p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-900"
-            title="فهرس الدروس"
+            title={t('فهرس الدروس')}
           >
             {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
 
           <div className="flex items-center gap-2 text-xs text-slate-400 truncate">
             <Link to="/paths/frontend-development" className="hover:text-indigo-400 transition hidden sm:inline">
-              المسار
+              {t('المسار')}
             </Link>
             <span className="hidden sm:inline text-slate-600">/</span>
             <Link to={`/courses/${courseSlug}`} className="hover:text-indigo-400 transition truncate max-w-[140px] sm:max-w-xs font-medium">
-              {course?.title || courseSlug}
+              {t(course?.title || courseSlug)}
             </Link>
             <span className="text-slate-600">/</span>
             <span className="text-slate-200 font-semibold truncate max-w-[120px] sm:max-w-sm">
-              {lesson.title}
+              {t(lesson.title)}
             </span>
           </div>
         </div>
@@ -113,10 +134,10 @@ export const LessonReaderPage: React.FC = () => {
           <button
             onClick={handleShare}
             className="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-900 transition text-xs flex items-center gap-1 cursor-pointer"
-            title="مشاركة رابط الدرس"
+            title={t('مشاركة رابط الدرس')}
           >
             {copiedShare ? <Check className="w-4 h-4 text-emerald-400" /> : <Share2 className="w-4 h-4" />}
-            <span className="hidden sm:inline">{copiedShare ? 'تم النسخ' : 'مشاركة'}</span>
+            <span className="hidden sm:inline">{copiedShare ? t('تم النسخ') : t('مشاركة')}</span>
           </button>
 
           <button
@@ -129,7 +150,7 @@ export const LessonReaderPage: React.FC = () => {
             }`}
           >
             <CheckCircle2 className="w-4 h-4" />
-            <span>{isCompleted ? 'مكتمل ✅' : 'تحديد كمكتمل'}</span>
+            <span>{isCompleted ? t('مكتمل ✅') : t('تحديد كمكتمل')}</span>
           </button>
         </div>
       </div>
@@ -146,7 +167,7 @@ export const LessonReaderPage: React.FC = () => {
             <div className="flex items-center justify-between pb-3 border-b border-slate-800">
               <div className="flex items-center gap-2 text-slate-300 font-bold text-sm">
                 <BookOpen className="w-4 h-4 text-indigo-400" />
-                <span>فهرس كورس:</span>
+                <span>{t('فهرس كورس:')}</span>
               </div>
               <button onClick={() => setSidebarOpen(false)} className="lg:hidden p-1 text-slate-400 hover:text-white">
                 <X className="w-5 h-5" />
@@ -157,7 +178,7 @@ export const LessonReaderPage: React.FC = () => {
             {course?.modules.map((mod) => (
               <div key={mod.slug} className="space-y-2">
                 <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider px-2">
-                  {mod.title}
+                  {t(mod.title)}
                 </p>
                 <div className="space-y-1">
                   {mod.lessons.map((les) => {
@@ -179,7 +200,7 @@ export const LessonReaderPage: React.FC = () => {
                           ) : (
                             <Circle className={`w-3.5 h-3.5 shrink-0 ${isCurrent ? 'text-indigo-400' : 'text-slate-600'}`} />
                           )}
-                          <span className="truncate">{les.title}</span>
+                          <span className="truncate">                          {localizeLessonSummary(les, language).title}</span>
                         </div>
                         <span className="text-[10px] text-slate-500 font-mono shrink-0 mr-1">
                           {les.readTimeMinutes}د
@@ -199,28 +220,28 @@ export const LessonReaderPage: React.FC = () => {
           <div className="mb-8 space-y-4">
             <div className="flex flex-wrap items-center gap-3 text-xs text-slate-400">
               <span className="px-2.5 py-1 rounded-full bg-slate-900 border border-slate-800 text-indigo-400 font-medium">
-                الدرس رقم {lesson.order}
+                {t('الدرس رقم')} {lesson.order}
               </span>
               <span className="flex items-center gap-1 font-mono">
                 <Clock className="w-3.5 h-3.5 text-slate-500" />
-                <span>زمن القراءة المتوقع: {lesson.readTimeMinutes} دقائق</span>
+                <span>{t('زمن القراءة المتوقع:')} {lesson.readTimeMinutes} {t('دقائق')}</span>
               </span>
               {isCompleted && (
                 <span className="text-emerald-400 font-semibold flex items-center gap-1">
                   <CheckCircle2 className="w-3.5 h-3.5" />
-                  <span>تم إنجاز هذا المقال</span>
+                  <span>{t('تم إنجاز هذا المقال')}</span>
                 </span>
               )}
             </div>
 
             <h1 className="text-3xl sm:text-4xl font-extrabold text-white leading-tight">
-              {lesson.title}
+              {t(lesson.title)}
             </h1>
 
             {/* Summary callout */}
             <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800/80 text-sm text-slate-300 leading-relaxed">
-              <p className="font-semibold text-slate-200 mb-1">ملخص سريع:</p>
-              <p>{lesson.summary}</p>
+              <p className="font-semibold text-slate-200 mb-1">{t('ملخص سريع:')}</p>
+              <p>{t(lesson.summary)}</p>
             </div>
           </div>
 
@@ -230,17 +251,17 @@ export const LessonReaderPage: React.FC = () => {
           </article>
 
           {/* Interactive Code Playground (if present) */}
-          {lesson.interactiveExercise && (
+          {exercise && (
             <div className="mt-12 pt-8 border-t border-slate-800/80">
-              <CodePlayground exercise={lesson.interactiveExercise} />
+              <CodePlayground exercise={exercise} />
             </div>
           )}
 
           {/* End of Lesson Quiz (if present) */}
-          {lesson.quiz && (
+          {quiz && (
             <div className="mt-8">
               <LessonQuiz
-                quiz={lesson.quiz}
+                quiz={quiz}
                 onPassed={() => completeMutation.mutate()}
               />
             </div>
@@ -255,10 +276,10 @@ export const LessonReaderPage: React.FC = () => {
               >
                 <div className="flex items-center gap-2 text-xs text-slate-500 mb-1">
                   <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition" />
-                  <span>الدرس السابق</span>
+                  <span>{t('الدرس السابق')}</span>
                 </div>
                 <p className="text-sm font-bold text-slate-200 group-hover:text-indigo-300 transition">
-                  {navigation.previousLesson.title}
+                  {localizeLessonTitle(navigation.previousLesson.slug, navigation.previousLesson.title, language)}
                 </p>
               </Link>
             ) : (
@@ -271,11 +292,11 @@ export const LessonReaderPage: React.FC = () => {
                 className="w-full sm:w-auto p-4 rounded-2xl bg-gradient-to-r from-indigo-900/40 to-blue-900/40 hover:from-indigo-900/60 hover:to-blue-900/60 border border-indigo-500/30 text-left group transition cursor-pointer"
               >
                 <div className="flex items-center justify-end gap-2 text-xs text-indigo-400 mb-1">
-                  <span>الدرس التالي</span>
+                  <span>{t('الدرس التالي')}</span>
                   <ArrowLeft className="w-4 h-4 transform group-hover:-translate-x-1 transition" />
                 </div>
                 <p className="text-sm font-bold text-white group-hover:text-indigo-200 transition text-right">
-                  {navigation.nextLesson.title}
+                  {localizeLessonTitle(navigation.nextLesson.slug, navigation.nextLesson.title, language)}
                 </p>
               </Link>
             ) : (
@@ -292,4 +313,3 @@ export const LessonReaderPage: React.FC = () => {
     </div>
   );
 };
-

@@ -4,6 +4,8 @@ import { useQuery } from '@tanstack/react-query';
 import { Search, X, BookOpen, Clock, ArrowLeft, Terminal, FileCode, Palette, GitBranch, ShieldCheck, Atom } from 'lucide-react';
 import { apiService } from '../lib/api';
 import { ILessonSummary, ICourse } from '../types';
+import { useLanguage } from '../context/LanguageContext';
+import { localizeLessonSummary } from '../lib/lessonTranslations';
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -25,6 +27,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
   const navigate = useNavigate();
+  const { language, t, direction } = useLanguage();
 
   const { data: paths = [] } = useQuery({
     queryKey: ['paths'],
@@ -53,10 +56,11 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
 
         course.modules.forEach((module) => {
           module.lessons.forEach((lesson) => {
+            const localizedLesson = localizeLessonSummary(lesson, language);
             items.push({
               type: 'lesson',
-              title: lesson.title,
-              summary: lesson.summary,
+              title: localizedLesson.title,
+              summary: localizedLesson.summary,
               courseTitle: course.shortTitle,
               courseSlug: course.slug,
               lessonSlug: lesson.slug,
@@ -69,7 +73,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
     }
 
     return items;
-  }, [frontendPath]);
+  }, [frontendPath, language]);
 
   // Filter items based on searchTerm
   const filteredItems = useMemo(() => {
@@ -130,6 +134,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
       <div
         className="relative w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh]"
         onClick={(e) => e.stopPropagation()}
+        dir={direction}
       >
         {/* Search Input Bar */}
         <div className="flex items-center px-4 py-3.5 border-b border-slate-800 bg-slate-950/60">
@@ -139,8 +144,8 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
             autoFocus
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="ابحث عن درس، تقنية (مثل: HTML, Flexbox, React, TypeScript)..."
-            className="w-full bg-transparent text-white placeholder-slate-500 text-sm focus:outline-none text-right font-medium"
+            placeholder={t('ابحث عن درس، تقنية (مثل: HTML, Flexbox, React, TypeScript)...')}
+            className="w-full bg-transparent text-white placeholder-slate-500 text-sm focus:outline-none text-start font-medium"
           />
           {searchTerm && (
             <button
@@ -151,7 +156,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
             </button>
           )}
           <kbd className="hidden sm:inline-block px-2 py-0.5 text-[10px] font-mono text-slate-400 bg-slate-800 rounded border border-slate-700">
-            ESC للإغلاق
+            {t('ESC للإغلاق')}
           </kbd>
         </div>
 
@@ -159,7 +164,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
         <div className="p-2 overflow-y-auto space-y-1">
           {filteredItems.length === 0 ? (
             <div className="text-center py-12 text-slate-500 text-sm">
-              لم يتم العثور على نتائج تطابق: &quot;{searchTerm}&quot;
+              {t('لم يتم العثور على نتائج تطابق:')} &quot;{searchTerm}&quot;
             </div>
           ) : (
             filteredItems.map((item, index) => {
@@ -223,11 +228,11 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
         <div className="p-3 bg-slate-950/80 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500">
           <div className="flex items-center gap-3">
             <span>
-              استخدم <kbd className="px-1.5 py-0.5 bg-slate-800 rounded text-slate-300">↑</kbd>{' '}
-              <kbd className="px-1.5 py-0.5 bg-slate-800 rounded text-slate-300">↓</kbd> للتنقل
+              {t('استخدم')} <kbd className="px-1.5 py-0.5 bg-slate-800 rounded text-slate-300">↑</kbd>{' '}
+              <kbd className="px-1.5 py-0.5 bg-slate-800 rounded text-slate-300">↓</kbd> {t('للتنقل')}
             </span>
             <span>
-              اضغط <kbd className="px-1.5 py-0.5 bg-slate-800 rounded text-slate-300">Enter</kbd> للفتح
+              {t('اضغط')} <kbd className="px-1.5 py-0.5 bg-slate-800 rounded text-slate-300">Enter</kbd> {t('للفتح')}
             </span>
           </div>
           <span>Code Academy Search</span>
@@ -236,4 +241,3 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
     </div>
   );
 };
-

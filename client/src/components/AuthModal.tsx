@@ -5,20 +5,21 @@ import { z } from 'zod';
 import { X, Lock, Mail, User as UserIcon, Loader2 } from 'lucide-react';
 import { api } from '../lib/api';
 import { useAuth } from '../context/AuthContext';
-
-const authSchema = z.object({
-  name: z.string().min(2, 'الاسم يجب أن يكون حرفين على الأقل').optional(),
-  email: z.string().email('صيغة البريد الإلكتروني غير صحيحة'),
-  password: z.string().min(6, 'كلمة المرور يجب أن لا تقل عن 6 أحرف'),
-});
+import { useLanguage } from '../context/LanguageContext';
 
 type AuthFormData = z.infer<typeof authSchema>;
 
 export const AuthModal: React.FC = () => {
   const { isAuthModalOpen, closeAuthModal, login } = useAuth();
+  const { t, direction } = useLanguage();
   const [isRegister, setIsRegister] = useState(false);
   const [serverError, setServerError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const authSchema = z.object({
+    name: z.string().min(2, t('الاسم يجب أن يكون حرفين على الأقل')).optional(),
+    email: z.string().email(t('صيغة البريد الإلكتروني غير صحيحة')),
+    password: z.string().min(6, t('كلمة المرور يجب أن لا تقل عن 6 أحرف')),
+  });
 
   const {
     register,
@@ -44,15 +45,15 @@ export const AuthModal: React.FC = () => {
       login(res.data.token, res.data.user);
       reset();
     } catch (err: any) {
-      setServerError(err.response?.data?.message || 'حدث خطأ أثناء المعالجة، يرجى المحاولة ثانية');
+      setServerError(err.response?.data?.message || t('حدث خطأ أثناء المعالجة، يرجى المحاولة ثانية'));
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="relative w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-6 sm:p-8 text-right">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200" dir={direction}>
+      <div className="relative w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-6 sm:p-8 text-start">
         {/* Close Button */}
         <button
           onClick={closeAuthModal}
@@ -64,12 +65,12 @@ export const AuthModal: React.FC = () => {
         {/* Modal Header */}
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-white mb-2">
-            {isRegister ? 'إنشاء حساب جديد' : 'تسجيل الدخول'}
+            {isRegister ? t('إنشاء حساب جديد') : t('تسجيل الدخول')}
           </h2>
           <p className="text-slate-400 text-sm">
             {isRegister
-              ? 'انضم إلى مجتمع مطوري الويب العرب واحفظ تقدمك وإنجازاتك مجاناً'
-              : 'أهلاً بعودتك! تابع مسارك البرمجي من حيث توقفت'}
+              ? t('انضم إلى مجتمع مطوري الويب واحفظ تقدمك وإنجازاتك مجاناً')
+              : t('أهلاً بعودتك! تابع مسارك البرمجي من حيث توقفت')}
           </p>
         </div>
 
@@ -82,11 +83,11 @@ export const AuthModal: React.FC = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {isRegister && (
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">الاسم الكامل</label>
+              <label className="block text-sm font-medium text-slate-300 mb-1.5">{t('الاسم الكامل')}</label>
               <div className="relative">
                 <input
                   type="text"
-                  placeholder="محمد أحمد"
+                  placeholder={t('مثال: محمد أحمد')}
                   {...register('name')}
                   className="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl px-4 py-2.5 pl-10 text-white placeholder-slate-500 focus:outline-none transition"
                 />
@@ -97,7 +98,7 @@ export const AuthModal: React.FC = () => {
           )}
 
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1.5">البريد الإلكتروني</label>
+            <label className="block text-sm font-medium text-slate-300 mb-1.5">{t('البريد الإلكتروني')}</label>
             <div className="relative">
               <input
                 type="email"
@@ -111,7 +112,7 @@ export const AuthModal: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1.5">كلمة المرور</label>
+            <label className="block text-sm font-medium text-slate-300 mb-1.5">{t('كلمة المرور')}</label>
             <div className="relative">
               <input
                 type="password"
@@ -132,12 +133,12 @@ export const AuthModal: React.FC = () => {
             {isSubmitting ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                <span>جارٍ المعالجة...</span>
+                <span>{t('جارٍ المعالجة...')}</span>
               </>
             ) : isRegister ? (
-              'إنشاء الحساب مجاناً'
+              t('إنشاء الحساب مجاناً')
             ) : (
-              'تسجيل الدخول'
+              t('تسجيل الدخول')
             )}
           </button>
         </form>
@@ -146,7 +147,7 @@ export const AuthModal: React.FC = () => {
         <div className="mt-6 text-center text-sm text-slate-400">
           {isRegister ? (
             <p>
-              لديك حساب بالفعل؟{' '}
+              {t('لديك حساب بالفعل؟')}{' '}
               <button
                 type="button"
                 onClick={() => {
@@ -155,12 +156,12 @@ export const AuthModal: React.FC = () => {
                 }}
                 className="text-indigo-400 hover:text-indigo-300 font-semibold cursor-pointer underline"
               >
-                سجل الدخول الآن
+                {t('سجل الدخول الآن')}
               </button>
             </p>
           ) : (
             <p>
-              ليس لديك حساب بعد؟{' '}
+              {t('ليس لديك حساب بعد؟')}{' '}
               <button
                 type="button"
                 onClick={() => {
@@ -169,7 +170,7 @@ export const AuthModal: React.FC = () => {
                 }}
                 className="text-indigo-400 hover:text-indigo-300 font-semibold cursor-pointer underline"
               >
-                أنشئ حساباً جديداً
+                {t('أنشئ حساباً جديداً')}
               </button>
             </p>
           )}
@@ -178,4 +179,3 @@ export const AuthModal: React.FC = () => {
     </div>
   );
 };
-

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface ProgressBarProps {
   progress: number; // 0 to 100
@@ -13,6 +14,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
   size = 'md',
   showLabel = false,
 }) => {
+  const { t } = useLanguage();
   const clamped = Math.min(100, Math.max(0, Math.round(progress)));
 
   const heightClasses = {
@@ -35,7 +37,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
     <div className="w-full">
       {showLabel && (
         <div className="flex justify-between items-center text-xs mb-1 text-slate-400 font-medium">
-          <span>نسبة الإنجاز</span>
+          <span>{t('نسبة الإنجاز')}</span>
           <span className="font-mono text-indigo-400 font-semibold">{clamped}%</span>
         </div>
       )}
@@ -48,4 +50,3 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
     </div>
   );
 };
-

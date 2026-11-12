@@ -47,10 +47,10 @@ export const initSeedData = async () => {
       }
 
       const updatedCourses = coursesData.filter((course) =>
-        ['html-fundamentals', 'css-fundamentals'].includes(course.slug)
+        ['html-fundamentals', 'css-fundamentals', 'javascript-fundamentals'].includes(course.slug)
       );
-      if (updatedCourses.length !== 2) {
-        throw new Error('HTML and CSS course data is required for curriculum synchronization');
+      if (updatedCourses.length !== 3) {
+        throw new Error('HTML, CSS, and JavaScript course data is required for curriculum synchronization');
       }
 
       for (const course of updatedCourses) {

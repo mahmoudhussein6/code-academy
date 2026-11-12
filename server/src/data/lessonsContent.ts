@@ -1,4 +1,4 @@
-import { ILesson, IInteractiveExercise } from '../types';
+import { ILesson, IInteractiveExercise, IQuiz } from '../types';
 
 const getHtmlModuleSlug = (order: number): string => {
   if (order <= 11) return 'html-intro-module';
@@ -129,6 +129,36 @@ const createCssLesson = (
   summary,
   readTimeMinutes: 5,
   quiz: createTopicQuiz('css-fundamentals', title, summary, order),
+  contentMarkdown,
+});
+
+const getJavaScriptModuleSlug = (order: number): string => {
+  if (order === 1) return 'js-intro-module';
+  if (order <= 3) return 'js-core-logic-module';
+  if (order <= 5) return 'js-data-structures-module';
+  if (order === 6) return 'js-dom-module';
+  if (order <= 8) return 'js-async-errors-module';
+  return 'js-modern-practices-module';
+};
+
+const createJavaScriptLesson = (
+  order: number,
+  slug: string,
+  title: string,
+  summary: string,
+  contentMarkdown: string,
+  interactiveExercise: IInteractiveExercise,
+  quiz: IQuiz
+): ILesson => ({
+  slug,
+  courseSlug: 'javascript-fundamentals',
+  moduleSlug: getJavaScriptModuleSlug(order),
+  order,
+  title,
+  summary,
+  readTimeMinutes: 8,
+  interactiveExercise,
+  quiz,
   contentMarkdown,
 });
 
@@ -2504,9 +2534,9 @@ console.log(multiply(4, 5)); // 20
     courseSlug: 'javascript-fundamentals',
     moduleSlug: 'js-core-logic-module',
     order: 3,
-    title: 'المصفوفات والكائنات ودوال المعالجة الحديثة (map, filter)',
+    title: 'المصفوفات ودوال المصفوفات (map, filter, reduce)',
     readTimeMinutes: 10,
-    summary: 'التعامل مع قوائم البيانات كالمحترفين: map, filter, reduce، وتفكيك الكائنات Destructuring.',
+    summary: 'إنشاء القوائم وتعديلها والبحث فيها وتحويلها باستخدام map وfilter وreduce وغيرها.',
     interactiveExercise: {
       instructions: 'استخدم الدالة `filter` لإنشاء مصفوفة جديدة تحتوي فقط على الأرقام الزوجية من المصفوفة `numbers`.',
       initialJs: `const numbers = [1, 2, 3, 4, 5, 6];
@@ -3300,6 +3330,748 @@ function LessonReaderPage() {
 تهانينا! 🎉 لقد أتممت قراءة وتطبيق جميع مبادئ مسار الفرونت إند، وأصبحت جاهزاً تماماً للغوص في التطبيقات العملية والبرمجة المستمرة!`,
   },
 ];
+
+const javascriptLessonContent: Record<string, string> = {
+  'js-variables-and-data-types': `# الفصل الثاني: أساسيات JavaScript
+
+## قواعد كتابة الكود
+
+JavaScript حساسة لحالة الأحرف: \`score\` و\`Score\` اسمان مختلفان. المسافات تنظم الكود، والتعليقات تشرح السبب أو الفكرة:
+
+\`\`\`javascript
+// تعليق لسطر واحد
+/*
+  تعليق متعدد الأسطر
+*/
+const learnerName = "سلمى";
+\`\`\`
+
+الفاصلة المنقوطة اختيارية في مواضع كثيرة بسبب الإضافة التلقائية ASI؛ اتبع أسلوباً ثابتاً في المشروع.
+
+## المتغيرات: var وlet وconst
+
+| الكلمة | النطاق | إعادة الإسناد | الاستخدام |
+|---|---|---|---|
+| \`const\` | كتلة | لا | الافتراضي عندما لن تعيد إسناد المتغير |
+| \`let\` | كتلة | نعم | قيمة تتغير مثل العدّاد |
+| \`var\` | دالة | نعم | أسلوب قديم؛ تجنبه في الكود الجديد |
+
+\`\`\`javascript
+const academyName = "Code Academy";
+let score = 0;
+score += 10;
+
+const skills = ["HTML"];
+skills.push("JavaScript"); // مسموح: const تمنع إعادة الإسناد لا تعديل المحتوى
+\`\`\`
+
+## أنواع البيانات
+
+| المجموعة | الأنواع | مثال |
+|---|---|---|
+| بدائية | \`string\`, \`number\`, \`boolean\`, \`undefined\`, \`null\`, \`symbol\`, \`bigint\` | \`"مرحبا"\`, \`42\`, \`true\` |
+| كائنات | \`object\`، ومنها المصفوفات والدوال | \`{ name: "ليلى" }\` |
+
+تُستخدم \`typeof\` لمعرفة النوع. ملاحظة تاريخية: \`typeof null\` يعيد \`"object"\`.
+
+## المعاملات والتحويل
+
+تشمل المعاملات الحسابية \`+\` و\`-\` و\`*\` و\`/\`، والإسناد \`=\` و\`+=\`، والمقارنة \`===\` و\`!==\`، والمنطق \`&&\` و\`||\` و\`!\`. استخدم المقارنة الصارمة غالباً.
+
+| التعبير | النتيجة | السبب |
+|---|---|---|
+| \`"3" + 4\` | \`"34"\` | جمع نصي |
+| \`Number("3") + 4\` | \`7\` | تحويل صريح |
+| \`3 == "3"\` | \`true\` | تحويل ضمني |
+| \`3 === "3"\` | \`false\` | النوع مختلف |
+
+القيم falsy: \`false\` و\`0\` و\`-0\` و\`0n\` و\`""\` و\`null\` و\`undefined\` و\`NaN\`. أما \`[]\` و\`{}\` فقيم truthy.
+
+## الشروط والحلقات
+
+\`\`\`javascript
+const grade = 82;
+if (grade >= 90) console.log("ممتاز");
+else if (grade >= 60) console.log("ناجح");
+else console.log("حاول مرة أخرى");
+
+for (let i = 0; i < 3; i++) console.log(i);
+\`\`\`
+
+| البناء | الاستخدام |
+|---|---|
+| \`if/else\` | تنفيذ مسارات بحسب الشروط |
+| \`switch\` | الاختيار بين حالات لقيمة واحدة |
+| \`for\` و\`while\` | تكرار مع تحكم واضح بشرط التوقف |
+| \`do...while\` | تنفيذ الجسم مرة على الأقل |
+| \`for...of\` | المرور على قيم المصفوفات والنصوص |
+| \`for...in\` | المرور على مفاتيح الكائنات؛ ليس الخيار المعتاد للمصفوفات |
+
+يوقف \`break\` الحلقة، وتتجاوز \`continue\` التكرار الحالي. استخدم JSDoc لتوثيق الدوال العامة أو المعقدة، واكتب تعليقات تشرح القرارات لا الأسطر الواضحة.`,
+  'js-functions-and-scope': `# الفصل الثالث: الدوال في JavaScript
+
+الدالة وحدة تنفذ مهمة واضحة، وتساعد على إعادة استخدام المنطق واختباره.
+
+## الإعلان والتعبير
+
+\`\`\`javascript
+function greet(name) {
+  return \`أهلاً \${name}\`;
+}
+
+const double = function (number) {
+  return number * 2;
+};
+\`\`\`
+
+| النوع | الاستدعاء قبل التعريف | ملاحظات |
+|---|---|---|
+| Function Declaration | ممكن | يرفع تعريف الدالة |
+| Function Expression | غير ممكن قبل تهيئة المتغير | يتبع قواعد \`let\` أو \`const\` |
+| Arrow Function | غير ممكن قبل تهيئة المتغير | صيغة مختصرة وترث \`this\` |
+
+## Arrow Functions والمعاملات
+
+\`\`\`javascript
+const multiply = (a, b) => a * b; // إرجاع ضمني
+const greetStudent = name => \`أهلاً \${name}\`;
+const sum = (a = 0, b = 0) => a + b; // قيم افتراضية
+\`\`\`
+
+المعاملات Parameters أسماء في تعريف الدالة، والوسائط Arguments هي القيم عند استدعائها. يجمع rest القيم في مصفوفة، بينما ينشر spread عناصر مصفوفة:
+
+\`\`\`javascript
+function total(...prices) {
+  return prices.reduce((sum, price) => sum + price, 0);
+}
+const allPrices = [10, 20, ...[30]];
+\`\`\`
+
+الدوال السهمية لا تملك \`this\` أو \`arguments\` خاصين بها، لذا لا تستبدل بها كل الدوال العادية.
+
+## النطاق والإغلاق
+
+النطاق العام متاح على مستوى الوحدة أو البيئة، ونطاق الدالة داخل الدالة، ونطاق الكتلة داخل \`{}\` مع \`let\` و\`const\`.
+
+الإغلاق Closure هو احتفاظ الدالة بالنطاق الخارجي الذي أنشئت فيه:
+
+\`\`\`javascript
+function createCounter() {
+  let count = 0;
+  return () => ++count;
+}
+const next = createCounter();
+console.log(next()); // 1
+console.log(next()); // 2
+\`\`\`
+
+تأخذ الدوال عالية الرتبة دوالاً كوسائط أو تعيد دوالاً. والـ Callback دالة تمرر لتنفذ لاحقاً، مثل \`map\` أو مستمع حدث. أما IIFE فتعبير دالي ينفذ فوراً؛ تستخدم Modules الحديثة غالباً بدلاً منه لإنشاء نطاق مستقل.`,
+  'js-arrays-and-objects-methods': `# الفصل الخامس: المصفوفات ودوالها
+
+المصفوفة قائمة مرتبة يبدأ فهرسها من الصفر. استخدم \`[]\` للإنشاء و\`at(-1)\` للوصول إلى العنصر الأخير:
+
+\`\`\`javascript
+const skills = ["HTML", "CSS", "JavaScript"];
+console.log(skills[0]); // HTML
+console.log(skills.at(-1)); // JavaScript
+\`\`\`
+
+## التعديل والطرق الشائعة
+
+| الطريقة | ماذا تفعل؟ | تعدل الأصل؟ |
+|---|---|---|
+| \`push\` / \`pop\` | إضافة/إزالة من النهاية | نعم |
+| \`unshift\` / \`shift\` | إضافة/إزالة من البداية | نعم |
+| \`splice\` | حذف أو إدراج داخل المصفوفة | نعم |
+| \`slice\` | نسخ جزء من المصفوفة | لا |
+| \`concat\` | دمج مصفوفات | لا |
+| \`includes\` / \`indexOf\` | اختبار وجود قيمة أو موقعها | لا |
+
+## التحويل والبحث
+
+\`\`\`javascript
+const prices = [10, 20, 30];
+const withTax = prices.map(price => price * 1.15);
+const expensive = prices.filter(price => price >= 20);
+const total = prices.reduce((sum, price) => sum + price, 0);
+\`\`\`
+
+| الطريقة | النتيجة |
+|---|---|
+| \`map\` | مصفوفة جديدة بالقيم المحولة |
+| \`filter\` | مصفوفة جديدة بالعناصر المطابقة |
+| \`reduce\` | قيمة واحدة مجمعة |
+| \`find\` / \`findIndex\` | أول عنصر مطابق أو فهرسه |
+| \`some\` / \`every\` | هل يطابق بعض العناصر / جميعها؟ |
+| \`flat\` / \`flatMap\` | تسطيح مستويات أو تحويل ثم تسطيح |
+| \`forEach\` | تنفيذ دالة لكل عنصر دون إنشاء نتيجة جديدة |
+
+ترتب \`sort()\` العناصر كنص افتراضياً؛ مرر دالة مقارنة للأرقام:
+
+\`\`\`javascript
+[10, 2, 30].sort((a, b) => a - b); // [2, 10, 30]
+\`\`\`
+
+تذكر أن \`sort\` و\`reverse\` يعدلان المصفوفة الأصلية. يمكن نسخها أولاً باستخدام \`[...items]\`. تدعم المصفوفات المتداخلة البيانات متعددة الأبعاد، ويسمح تفكيك المصفوفة باستخراج قيمها: \`const [first, second] = skills;\`.`,
+  'dom-manipulation-and-events': `# الفصل السادس: التعامل مع DOM
+
+DOM واجهة تمثل HTML كشجرة من الكائنات. بواسطتها تختار JavaScript العناصر وتغير المحتوى أو السمات أو الفئات أو تنشئ عناصر جديدة.
+
+## اختيار العناصر
+
+| الطريقة | النتيجة |
+|---|---|
+| \`getElementById\` | عنصر واحد بمعرف |
+| \`getElementsByClassName\` / \`getElementsByTagName\` | مجموعة حية تتحدث عند تغير DOM |
+| \`querySelector\` | أول عنصر يطابق محدد CSS |
+| \`querySelectorAll\` | مجموعة ثابتة من العناصر المطابقة |
+
+\`\`\`javascript
+const title = document.querySelector("#page-title");
+title.textContent = "أهلاً بك";
+title.classList.add("highlight");
+title.setAttribute("aria-live", "polite");
+\`\`\`
+
+استخدم \`textContent\` للنص. لا تضع مدخلات المستخدم غير الموثوقة في \`innerHTML\`؛ فقد يؤدي ذلك إلى XSS. استخدم \`createElement\` و\`textContent\` لبناء عناصر آمنة.
+
+## إنشاء العناصر والأحداث
+
+\`\`\`javascript
+const list = document.querySelector("#lessons");
+const item = document.createElement("li");
+item.textContent = "درس JavaScript";
+list.append(item);
+
+list.addEventListener("click", event => {
+  if (event.target.matches("li")) {
+    console.log("تم اختيار:", event.target.textContent);
+  }
+});
+\`\`\`
+
+تسمى ربط مستمع واحد بالأب لمعالجة أحداث الأبناء **تفويض الأحداث**. تنتشر معظم الأحداث من العنصر إلى أسلافه في مرحلة bubbling، ويمكن الاستماع أثناء capturing بخيار مناسب. استخدم \`event.preventDefault()\` لإلغاء السلوك الافتراضي عند الحاجة، و\`stopPropagation()\` فقط عندما يكون إيقاف الانتشار مقصوداً.
+
+عند إنشاء عناصر كثيرة استخدم \`DocumentFragment\` ثم أضفه دفعة واحدة. أزل مستمعي الأحداث عند انتهاء الحاجة إليهم لتجنب احتفاظ الذاكرة بعناصر لم تعد مستخدمة.`,
+  'async-await-and-fetching-apis': `# الفصل السابع: JavaScript غير المتزامنة
+
+الكود المتزامن ينفذ بالترتيب. أما العمليات البطيئة مثل الشبكة والمؤقتات فتعيد نتيجة لاحقاً؛ لا تنتظر JavaScript الشبكة بحجب واجهة المستخدم.
+
+## من Callback إلى Promise
+
+| النمط | الفكرة | التحدي |
+|---|---|---|
+| Callback | تمرير دالة لتعمل لاحقاً | التداخل العميق يصعب القراءة |
+| Promise | يمثل نتيجة مستقبلية ناجحة أو مرفوضة | سلسلة \`then/catch\` |
+| \`async/await\` | صياغة مقروءة فوق Promises | يلزم التعامل مع الرفض |
+
+للوعد ثلاث حالات: pending ثم fulfilled أو rejected. تستخدم \`then\` للنجاح و\`catch\` للفشل و\`finally\` للتنظيف.
+
+\`\`\`javascript
+async function loadUsers() {
+  const response = await fetch("/api/users");
+  if (!response.ok) throw new Error("تعذر تحميل المستخدمين");
+  return response.json();
+}
+\`\`\`
+
+\`fetch\` يرفض عند أخطاء الشبكة، لكنه لا يرفض تلقائياً لكل استجابة HTTP مثل 404؛ افحص \`response.ok\`. استخدم \`try/catch\` لعرض حالة خطأ مفهومة.
+
+## تنسيق عدة وعود
+
+| الوسيلة | السلوك |
+|---|---|
+| \`Promise.all\` | تنتظر الجميع وترفض إذا رفض أحدها |
+| \`Promise.race\` | تستقر عند أول وعد يستقر |
+| \`Promise.allSettled\` | تنتظر الجميع وتعيد حالة كل وعد |
+
+لإرسال POST، مرر \`method\` و\`headers\` و\`body\` بصيغة مناسبة. يمكن استخدام \`AbortController\` لإلغاء طلب لم تعد بحاجة إليه. يستخدم debounce لتأخير تنفيذ البحث حتى يتوقف المستخدم عن الكتابة، وthrottle لتقييد عدد مرات التنفيذ. لا تعِد المحاولة بلا حد؛ ضع حداً زمنياً وعدداً أقصى للمحاولات.`,
+};
+
+const additionalJavaScriptLessons: ILesson[] = [
+  createJavaScriptLesson(
+    1,
+    'js-introduction',
+    'الفصل الأول: مقدمة في JavaScript',
+    'تعرف على دور JavaScript والفرق بينها وبين ECMAScript وإعداد بيئة التطوير وربطها بصفحة HTML.',
+    `# الفصل الأول: مقدمة في JavaScript
+
+## ما دور JavaScript؟
+
+تخيّل صفحة الويب كمنزل:
+
+| التقنية | تشبيهها | دورها |
+|---|---|---|
+| HTML | الهيكل والغرف | تنظيم المحتوى ومعناه |
+| CSS | الطلاء والأثاث | المظهر والتخطيط |
+| JavaScript | الحركة والتحكم | التفاعل والمنطق وتحديث البيانات |
+
+تعمل JavaScript في المتصفح للتفاعل مع الصفحة، ويمكن تشغيلها أيضاً خارج المتصفح باستخدام بيئات مثل Node.js.
+
+## JavaScript وECMAScript
+
+ECMAScript هو المعيار الذي يحدد مواصفات اللغة الأساسية. أما JavaScript فهي تطبيق عملي له، وتوفر بيئة التشغيل واجهات إضافية:
+
+| الجزء | أمثلة |
+|---|---|
+| مواصفات اللغة | المتغيرات، الدوال، المصفوفات، الأصناف |
+| واجهات المتصفح | \`document\` وDOM و\`fetch\` و\`localStorage\` |
+| واجهات Node.js | نظام الملفات والخوادم والوحدات الخاصة بـNode |
+
+لا تخلط بين خاصية من اللغة وواجهة يوفرها المتصفح؛ \`Array.map()\` من اللغة، بينما \`document.querySelector()\` من واجهات المتصفح.
+
+## لمحة تاريخية وبيئة العمل
+
+ظهرت JavaScript عام 1995، ثم بدأ توحيد مواصفاتها عبر ECMA International. كان تحديث ES2015، المعروف أيضاً باسم ES6، نقطة تحول كبيرة، ومنذ ذلك الوقت تصدر تحديثات للمواصفات بصورة منتظمة.
+
+للبداية تحتاج إلى محرر مثل VS Code، ومتصفح حديث وأدوات المطور Developer Tools. أضف Node.js عند الحاجة لتشغيل الكود خارج المتصفح، ثم Git وأدوات مثل ESLint وPrettier عندما يكبر المشروع.
+
+## ربط JavaScript بصفحة HTML
+
+\`\`\`html
+<script src="/scripts/app.js" defer></script>
+\`\`\`
+
+الملف الخارجي هو الخيار المفضل. مع \`defer\` ينزل الملف بالتوازي وينفذ بعد تحليل HTML، وتحافظ السكربتات المؤجلة على ترتيبها. يمكن استخدام \`async\` لسكربت مستقل لا يعتمد على ترتيب ملفات أخرى.
+
+\`\`\`html
+<script>
+  console.log("أهلاً من الصفحة");
+</script>
+\`\`\`
+
+يناسب الكود الداخلي الأمثلة الصغيرة، بينما سمة مثل \`onclick\` تخلط البنية بالسلوك ويفضل تجنبها. استخدم \`addEventListener\` في ملف منفصل.
+
+| الطريقة | الاستخدام |
+|---|---|
+| ملف خارجي مع \`defer\` | معظم المشاريع، منظم ويعمل بعد تحليل الصفحة |
+| \`<script>\` داخلي | تجربة قصيرة أو مثال صغير |
+| سمة مثل \`onclick\` | تجنبها في المشاريع لأنها تخلط HTML بالسلوك |
+
+## أول برنامج
+
+\`\`\`javascript
+const learner = "أنت";
+console.log(\`مرحباً \${learner}!\`);
+\`\`\`
+
+افتح Developer Tools ثم تبويب Console لرؤية النتيجة. في الدروس القادمة سنضيف الأنواع والشروط والدوال ونبني برامج مفيدة خطوة بخطوة.`,
+    {
+      instructions: 'عرّف متغيراً باسم learnerName ثم اطبع رسالة ترحيب تستخدم قيمته داخل template literal.',
+      initialJs: `// أنشئ متغير learnerName
+// اطبع رسالة ترحيب باستخدام console.log`,
+      solution: `const learnerName = "ليلى";
+console.log(\`مرحباً \${learnerName}!\`);`,
+    },
+    {
+      question: 'ما فائدة defer عند ربط ملف JavaScript في head؟',
+      options: [
+        'تحميل الملف بالتوازي ثم تنفيذه بعد تحليل HTML.',
+        'تشغيل الملف قبل تحميل HTML دائماً.',
+        'تحويل JavaScript إلى CSS.',
+        'منع الملف من استخدام DOM.',
+      ],
+      correctIndex: 0,
+      explanation: 'تسمح defer بتنزيل السكربت بالتوازي، ثم تشغيله بعد تحليل المستند مع الحفاظ على ترتيب السكربتات المؤجلة.',
+    }
+  ),
+  createJavaScriptLesson(
+    4,
+    'js-objects-and-oop',
+    'الفصل الرابع: الكائنات والبرمجة كائنية التوجه',
+    'أنشئ الكائنات وأدر خصائصها، وافهم this وprototype وClasses وJSON.',
+    `# الفصل الرابع: الكائنات والبرمجة كائنية التوجه
+
+الكائن يجمع البيانات والسلوك في أزواج مفتاح وقيمة:
+
+\`\`\`javascript
+const student = {
+  name: "عمر",
+  level: "مبتدئ",
+  introduce() {
+    return \`أنا \${this.name}\`;
+  },
+};
+
+student.city = "القاهرة";
+console.log(student["level"]);
+\`\`\`
+
+استخدم النقطة للخصائص المعروفة، والأقواس عندما يكون اسم المفتاح متغيراً. تدعم الكائنات الاختصار \`{ name }\` والأسماء المحسوبة \`{ [key]: value }\` والجالبات والمحددات.
+
+## this وطرق الكائن
+
+في الطريقة العادية يشير \`this\` عادةً إلى الكائن الذي استدعى الطريقة. أما الدالة السهمية فترث \`this\` من النطاق المحيط. يمكن ضبطه صراحةً باستخدام \`call\` أو \`apply\` أو \`bind\`.
+
+## النماذج الأولية وClasses
+
+تعتمد JavaScript على سلسلة النماذج الأولية Prototype. صياغة \`class\` واجهة أوضح لإنشاء الكائنات والوراثة:
+
+\`\`\`javascript
+class Person {
+  #name;
+  constructor(name) {
+    this.#name = name;
+  }
+  greet() {
+    return \`أهلاً، أنا \${this.#name}\`;
+  }
+}
+
+class Student extends Person {
+  constructor(name, course) {
+    super(name);
+    this.course = course;
+  }
+}
+\`\`\`
+
+تتيح \`extends\` الوراثة و\`super\` استدعاء المُنشئ الأب. الحقول التي تبدأ بـ\`#\` خاصة ولا يمكن الوصول إليها خارج الصنف. ظهرت الحقول الخاصة القياسية في ES2022.
+
+| الطريقة | الاستخدام |
+|---|---|
+| \`Object.keys\` / \`Object.values\` | قراءة المفاتيح أو القيم |
+| \`Object.assign\` | نسخ خصائص سطحية إلى كائن |
+| \`Object.create\` | إنشاء كائن بنموذج أولي محدد |
+| \`Object.freeze\` | منع تغييرات مباشرة سطحية |
+
+## JSON
+
+JSON صيغة نصية لتبادل البيانات، وليست هي الكائن نفسه:
+
+\`\`\`javascript
+const text = JSON.stringify({ name: "عمر" });
+const data = JSON.parse(text);
+\`\`\`
+
+تأكد من معالجة أخطاء \`JSON.parse\` عند استقبال بيانات غير مضمونة، ولا تعتمد على \`freeze\` لحماية عميقة للكائنات المتداخلة.`,
+    {
+      instructions: 'أنشئ class باسم Student بحقل خاص للاسم ودالة تعيد رسالة ترحيب. جرّب إنشاء طالب وطباعة الرسالة.',
+      initialJs: `// اكتب class Student هنا
+// أنشئ كائناً واطبع رسالة الترحيب`,
+      solution: `class Student {
+  #name;
+  constructor(name) {
+    this.#name = name;
+  }
+  greet() {
+    return \`أهلاً، أنا \${this.#name}\`;
+  }
+}
+
+const student = new Student("عمر");
+console.log(student.greet());`,
+    },
+    {
+      question: 'ما الذي تضمنه الخاصية التي يبدأ اسمها بـ # داخل class؟',
+      options: [
+        'أنها خاصة ولا يمكن الوصول إليها مباشرة من خارج الصنف.',
+        'أنها تتحول تلقائياً إلى نص.',
+        'أنها تصبح ثابتة في كل الكائنات.',
+        'أنها متاحة عالمياً.',
+      ],
+      correctIndex: 0,
+      explanation: 'الحقول الخاصة التي تبدأ بـ # لا يمكن الوصول إليها إلا من داخل تعريف الصنف.',
+    }
+  ),
+  createJavaScriptLesson(
+    8,
+    'js-error-handling',
+    'الفصل الثامن: معالجة الأخطاء',
+    'التقط الأخطاء بوضوح، وأنشئ أخطاء مخصصة، وتعامل مع فشل الوعود.',
+    `# الفصل الثامن: معالجة الأخطاء
+
+تساعد معالجة الأخطاء على إظهار نتيجة مفهومة بدلاً من توقف المسار دون تفسير.
+
+\`\`\`javascript
+try {
+  const value = JSON.parse('{"score": 90}');
+  console.log(value.score);
+} catch (error) {
+  console.error("تعذر قراءة البيانات:", error.message);
+} finally {
+  console.log("انتهت محاولة القراءة");
+}
+\`\`\`
+
+\`catch\` يعالج الاستثناء، و\`finally\` ينفذ سواء نجحت العملية أم فشلت، لذلك يناسب تحرير الموارد. استخدم \`throw new Error("رسالة")\` بدلاً من رمي نصوص عشوائية.
+
+## أنواع الأخطاء الشائعة
+
+| النوع | مثال على السبب |
+|---|---|
+| \`SyntaxError\` | كتابة غير صالحة نحوياً |
+| \`ReferenceError\` | استخدام اسم غير معرّف |
+| \`TypeError\` | عملية غير مناسبة لنوع القيمة |
+| \`RangeError\` | قيمة خارج المجال المقبول |
+
+لأخطاء المجال أنشئ صنفاً يرث من \`Error\`:
+
+\`\`\`javascript
+class ValidationError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "ValidationError";
+  }
+}
+\`\`\`
+
+## الوعود والأخطاء
+
+استخدم \`.catch()\` مع Promise أو \`try/catch\` داخل \`async\` function. تذكر أن \`fetch\` يحتاج فحص \`response.ok\` لمعالجة استجابات HTTP الفاشلة.
+
+في المتصفح يمكن مراقبة الأخطاء العامة عبر \`window.onerror\` و\`unhandledrejection\`، وفي Node.js توجد واجهات للعملية. هذه أدوات تسجيل احتياطية وليست بديلاً عن معالجة الخطأ قرب مصدره. لا تبتلع الخطأ بصمت، ولا تعرض للمستخدم تفاصيل داخلية حساسة؛ سجّل التفاصيل المناسبة واعرض رسالة عملية.`,
+    {
+      instructions: 'اكتب دالة تتحقق من أن العمر رقم موجب، وارمِ ValidationError عند القيمة غير الصحيحة ثم التقط الخطأ.',
+      initialJs: `class ValidationError extends Error {
+  // أكمل الصنف
+}
+
+function validateAge(age) {
+  // تحقق من العمر وارمِ خطأ عند عدم صلاحيته
+}
+
+try {
+  validateAge(-2);
+} catch (error) {
+  console.log(error.name, error.message);
+}`,
+      solution: `class ValidationError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "ValidationError";
+  }
+}
+
+function validateAge(age) {
+  if (!Number.isFinite(age) || age <= 0) {
+    throw new ValidationError("العمر يجب أن يكون رقماً موجباً");
+  }
+  return age;
+}
+
+try {
+  validateAge(-2);
+} catch (error) {
+  console.log(error.name, error.message);
+}`,
+    },
+    {
+      question: 'متى تنفذ كتلة finally في try/catch؟',
+      options: [
+        'بعد انتهاء المحاولة سواء نجحت أو وقع خطأ.',
+        'فقط عند حدوث SyntaxError.',
+        'فقط إذا لم يحدث أي خطأ.',
+        'قبل تنفيذ كتلة try.',
+      ],
+      correctIndex: 0,
+      explanation: 'تستخدم finally للتنظيف أو الأعمال التي يجب أن تنفذ سواء نجحت العملية أو فشلت.',
+    }
+  ),
+  createJavaScriptLesson(
+    9,
+    'js-es6-plus-features',
+    'الفصل التاسع: ميزات JavaScript الحديثة (ES6+)',
+    'استخدم القوالب النصية والتفكيك وModules وMap وSet والميزات الحديثة بأمان.',
+    `# الفصل التاسع: ميزات JavaScript الحديثة
+
+## القوالب النصية والتفكيك
+
+تستخدم Template Literals العلامة \`\`\` وتدعم إدراج التعبيرات والأسطر المتعددة:
+
+\`\`\`javascript
+const name = "ليلى";
+const message = \`أهلاً \${name}
+في دورة JavaScript\`;
+
+const student = { name, level: "مبتدئ" };
+const { level } = student;
+const [first, second] = ["HTML", "CSS"];
+\`\`\`
+
+تدعم الدوال معاملات افتراضية، ويجمع rest العناصر بينما ينشر spread نسخة أو عناصر:
+
+\`\`\`javascript
+const updated = { ...student, level: "متوسط" };
+const greet = (person = "صديق") => \`مرحباً \${person}\`;
+\`\`\`
+
+## الوحدات Modules
+
+\`\`\`javascript
+// math.js
+export const add = (a, b) => a + b;
+
+// app.js
+import { add } from "./math.js";
+\`\`\`
+
+توجد exports مسماة وexport افتراضي. تقسم الوحدات المشروع إلى ملفات ذات مسؤولية واضحة، وغالباً تعمل في المتصفح مع \`type="module"\`.
+
+## Map وSet وSymbol
+
+| البنية | ما الذي تخزنه؟ | فائدة |
+|---|---|---|
+| \`Map\` | أزواج مفتاح/قيمة بأي نوع مفتاح | ترتيب الإدراج وطرق واضحة |
+| \`Set\` | قيماً فريدة | إزالة التكرار بسرعة |
+| \`Symbol\` | قيمة فريدة | مفاتيح مميزة للكائنات |
+
+\`\`\`javascript
+const uniqueSkills = new Set(["HTML", "CSS", "HTML"]);
+const scores = new Map([["ليلى", 95]]);
+\`\`\`
+
+## Iterators وميزات الوصول الآمن
+
+تعيد Generators المكتوبة \`function*\` قيماً بالتتابع عبر \`yield\`، ويمكن إيقافها واستئنافها:
+
+\`\`\`javascript
+function* ids() {
+  yield 1;
+  yield 2;
+}
+\`\`\`
+
+يمنع Optional Chaining الخطأ عند غياب قيمة وسيطة، ويعيد Nullish Coalescing قيمة افتراضية فقط عند \`null\` أو \`undefined\`:
+
+| التعبير | يستخدم القيمة البديلة عند |
+|---|---|
+| \`value ?? fallback\` | \`null\` أو \`undefined\` |
+| \`value || fallback\` | أي قيمة falsy مثل \`0\` أو النص الفارغ |
+
+\`\`\`javascript
+const city = student.profile?.city ?? "غير محددة";
+\`\`\`
+
+استخدم هذه الميزات عندما تجعل القصد أوضح، لا لمجرد حداثة الصياغة.`,
+    {
+      instructions: 'استخدم التفكيك لاستخراج اسم الطالب، و?. و?? لإظهار المدينة أو قيمة بديلة، ثم اطبع رسالة بالقالب النصي.',
+      initialJs: `const student = {
+  name: "ليلى",
+  profile: { city: "الإسكندرية" }
+};
+
+// استخرج الاسم والمدينة بأمان واطبع رسالة`,
+      solution: `const student = {
+  name: "ليلى",
+  profile: { city: "الإسكندرية" }
+};
+
+const { name, profile } = student;
+const city = profile?.city ?? "غير محددة";
+console.log(\`الطالبة \${name} من \${city}\`);`,
+    },
+    {
+      question: 'ما الفرق بين ?? و || عند اختيار قيمة بديلة؟',
+      options: [
+        '?? يستبدل null وundefined فقط، بينما || يستبدل كل القيم falsy مثل 0.',
+        'لا يوجد فرق بينهما.',
+        '|| يعمل مع الكائنات فقط.',
+        '?? يحول النصوص إلى أرقام.',
+      ],
+      correctIndex: 0,
+      explanation: 'Nullish coalescing يحافظ على قيم مثل 0 والنص الفارغ، ولا يستخدم البديل إلا عند null أو undefined.',
+    }
+  ),
+  createJavaScriptLesson(
+    10,
+    'js-best-practices',
+    'الفصل العاشر: أفضل ممارسات JavaScript',
+    'نظّم الكود، وحسّن الأداء، واهتم بالأمان والاختبار وإمكانية الوصول.',
+    `# الفصل العاشر: أفضل ممارسات JavaScript
+
+الكود الجيد لا يكتفي بأن يعمل؛ يجب أن يكون واضحاً وآمناً وسهل التعديل.
+
+## تنظيم الأسماء والملفات
+
+| العنصر | اصطلاح شائع | مثال |
+|---|---|---|
+| المتغيرات والدوال | camelCase | \`loadLessons\` |
+| الأصناف | PascalCase | \`LessonCard\` |
+| الثوابت العامة | UPPER_SNAKE_CASE عند الحاجة | \`MAX_RETRIES\` |
+| الملفات | kebab-case | \`lesson-service.js\` |
+
+سمِّ القيم المنطقية بـ \`is\` أو \`has\` عند جعلها أوضح مثل \`isLoading\`. اقسم الكود إلى Modules صغيرة ذات مسؤولية مفهومة، واستخدم Factory أو Observer عند حل مشكلة حقيقية لا لمجرد تطبيق نمط.
+
+## الأداء والذاكرة
+
+- اجمع تغييرات DOM واستخدم \`DocumentFragment\` عند إضافة عناصر كثيرة.
+- استخدم debounce أو throttle للأحداث المتكررة مثل البحث والتمرير.
+- استخدم memoization فقط للدوال المكلفة وبعد القياس.
+- أزل مستمعات الأحداث والمؤقتات عند انتهاء الحاجة.
+- تجنب إغلاقات تحتفظ بعناصر أو بيانات كبيرة بلا داعٍ.
+
+## الأمان
+
+لا تضع نص المستخدم غير الموثوق داخل \`innerHTML\`، ولا تستخدم \`eval()\`. استخدم \`textContent\` لبناء النص، وتحقق من المدخلات على الخادم كذلك. لا تخزن أسراراً في كود الواجهة أو تخزين المتصفح؛ تعامل مع Cookies الحساسة عبر إعدادات الخادم المناسبة مثل HttpOnly وSecure وSameSite.
+
+## التصحيح وجودة الكود
+
+استخدم \`console.table\` و\`console.time\` ونقاط التوقف في أدوات المطور، ويمكن وضع \`debugger\` مؤقتاً أثناء التطوير ثم إزالته. تساعد Source Maps على تتبع الكود الأصلي. استخدم ESLint لاكتشاف الأنماط الخطرة، وPrettier لتوحيد التنسيق، واختبارات الوحدة للتحقق من الوظائف الصغيرة. في TDD اكتب اختباراً يصف السلوك ثم نفذ الكود واجعله ينجح.
+
+## الإتاحة
+
+استخدم عناصر HTML الدلالية، واجعل التفاعل ممكناً بلوحة المفاتيح، وانقل التركيز بوضوح عند فتح الحوارات أو تغيير الشاشة. أضف ARIA عند الحاجة فقط؛ الدلالة الأصلية غالباً أفضل.
+
+### قائمة مراجعة قبل التسليم
+
+- هل الأسماء تصف دورها؟
+- هل عالجت حالات التحميل والخطأ؟
+- هل المدخلات غير الموثوقة آمنة؟
+- هل يمكن استخدام الواجهة بلوحة المفاتيح؟
+- هل اختبرت السلوك بدلاً من الاعتماد على الانطباع؟`,
+    {
+      instructions: 'اكتب دالة آمنة تعرض اسم الطالب في عنصر DOM باستخدام textContent، ثم تحقق من وجود العنصر قبل تعديله.',
+      initialHtml: `<p id="greeting">ستظهر التحية هنا</p>`,
+      initialJs: `const studentName = "<b>ليلى</b>";
+// اختر عنصر التحية واعرض النص بأمان`,
+      solution: `const studentName = "<b>ليلى</b>";
+const greeting = document.querySelector("#greeting");
+
+if (greeting) {
+  greeting.textContent = \`أهلاً \${studentName}\`;
+}`,
+    },
+    {
+      question: 'ما الطريقة الأكثر أماناً لعرض نص أدخله المستخدم داخل عنصر؟',
+      options: [
+        'تعيين النص إلى textContent.',
+        'دمجه مباشرة في innerHTML.',
+        'تمريره إلى eval().',
+        'إضافته كسمة onclick.',
+      ],
+      correctIndex: 0,
+      explanation: 'textContent يعرض المدخل كنص ولا يفسره كـHTML قابل للتنفيذ.',
+    }
+  ),
+];
+
+lessonsData.push(...additionalJavaScriptLessons);
+
+const javascriptLessonOrder: Record<string, number> = {
+  'js-introduction': 1,
+  'js-variables-and-data-types': 2,
+  'js-functions-and-scope': 3,
+  'js-objects-and-oop': 4,
+  'js-arrays-and-objects-methods': 5,
+  'dom-manipulation-and-events': 6,
+  'async-await-and-fetching-apis': 7,
+  'js-error-handling': 8,
+  'js-es6-plus-features': 9,
+  'js-best-practices': 10,
+};
+
+for (const lesson of lessonsData) {
+  if (lesson.courseSlug !== 'javascript-fundamentals') continue;
+  lesson.order = javascriptLessonOrder[lesson.slug];
+  lesson.moduleSlug = getJavaScriptModuleSlug(lesson.order);
+}
+
+for (const lesson of lessonsData) {
+  if (lesson.courseSlug === 'javascript-fundamentals') {
+    lesson.contentMarkdown = javascriptLessonContent[lesson.slug] ?? lesson.contentMarkdown;
+  }
+}
 
 for (const lesson of lessonsData) {
   const isHtmlOrCssLesson =

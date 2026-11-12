@@ -12,6 +12,7 @@ import { CoursePage } from './pages/CoursePage';
 import { LessonReaderPage } from './pages/LessonReaderPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { NotFoundPage } from './pages/NotFoundPage';
+import { useLanguage } from './context/LanguageContext';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -58,6 +59,7 @@ const AnimatedPage: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 // ─── Layout ───────────────────────────────────────────────────────────────────
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
+  const { direction, language } = useLanguage();
   const isReader = location.pathname.startsWith('/learn/');
   const is404 = !['/', '/dashboard'].includes(location.pathname) &&
     !location.pathname.startsWith('/paths/') &&
@@ -65,7 +67,13 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     !location.pathname.startsWith('/learn/');
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-['Cairo',sans-serif]">
+    <div
+      dir={direction}
+      lang={language}
+      className={`min-h-screen bg-slate-950 text-slate-100 flex flex-col ${
+        language === 'ar' ? "font-['Cairo',sans-serif]" : 'font-sans'
+      }`}
+    >
       {!is404 && <Navbar />}
       <main className="flex-1">
         <AnimatedPage>{children}</AnimatedPage>

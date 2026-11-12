@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Home, ArrowRight, Terminal, RefreshCw } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export const NotFoundPage: React.FC = () => {
+  const { direction, language, t } = useLanguage();
   const navigate = useNavigate();
   const [countdown, setCountdown] = useState(10);
   const [typed, setTyped] = useState('');
   const [visible, setVisible] = useState(false);
 
-  const targetText = '404 | الصفحة غير موجودة';
+  const targetText = language === 'ar' ? '404 | الصفحة غير موجودة' : '404 | Page not found';
 
   useEffect(() => {
     // Entrance animation
@@ -42,12 +44,12 @@ export const NotFoundPage: React.FC = () => {
       clearInterval(typeInterval);
       clearInterval(countInterval);
     };
-  }, [navigate]);
+  }, [navigate, targetText]);
 
   return (
     <div
       className={`min-h-screen bg-slate-950 flex items-center justify-center px-4 relative overflow-hidden transition-opacity duration-700 ${visible ? 'opacity-100' : 'opacity-0'}`}
-      dir="rtl"
+      dir={direction}
     >
       {/* Animated background */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -153,19 +155,19 @@ export const NotFoundPage: React.FC = () => {
         {/* Message */}
         <div className="space-y-3">
           <h2 className="text-2xl font-bold text-white">
-            يبدو أنك ضلّيت الطريق! 🧭
+            {t('يبدو أنك ضلّيت الطريق! 🧭')}
           </h2>
           <p className="text-slate-400 text-lg leading-relaxed">
-            الصفحة التي تبحث عنها غير موجودة أو تم نقلها.
+            {t('الصفحة التي تبحث عنها غير موجودة أو تم نقلها.')}
             <br />
-            سيتم توجيهك للرئيسية خلال{' '}
+            {t('سيتم توجيهك للرئيسية خلال')}{' '}
             <span
               className="font-bold text-indigo-400"
               style={{ animation: 'countPulse 1s ease-in-out infinite' }}
             >
               {countdown}
             </span>{' '}
-            ثوانٍ.
+            {t('ثوانٍ.')}
           </p>
         </div>
 
@@ -177,14 +179,14 @@ export const NotFoundPage: React.FC = () => {
             style={{ background: 'linear-gradient(135deg, #6366f1, #4f46e5)' }}
           >
             <Home className="w-5 h-5" />
-            العودة للرئيسية
+            {t('العودة للرئيسية')}
           </Link>
           <button
             onClick={() => navigate(-1)}
             className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl font-bold text-slate-300 border border-slate-700 hover:border-indigo-500 hover:text-white transition-all duration-200 hover:scale-105"
           >
             <ArrowRight className="w-5 h-5" />
-            الصفحة السابقة
+            {t('الصفحة السابقة')}
           </button>
         </div>
 
@@ -245,4 +247,3 @@ export const NotFoundPage: React.FC = () => {
     </div>
   );
 };
-

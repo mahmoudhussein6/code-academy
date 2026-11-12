@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { CheckCircle2, XCircle, HelpCircle, ArrowRight, Sparkles } from 'lucide-react';
 import { IQuiz } from '../types';
+import { useLanguage } from '../context/LanguageContext';
 
 interface LessonQuizProps {
   quiz: IQuiz;
@@ -8,6 +9,7 @@ interface LessonQuizProps {
 }
 
 export const LessonQuiz: React.FC<LessonQuizProps> = ({ quiz, onPassed }) => {
+  const { t, direction } = useLanguage();
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -27,15 +29,15 @@ export const LessonQuiz: React.FC<LessonQuizProps> = ({ quiz, onPassed }) => {
   };
 
   return (
-    <div className="my-10 p-6 sm:p-8 bg-slate-900/90 border border-slate-800 rounded-2xl shadow-xl">
+    <div className="my-10 p-6 sm:p-8 bg-slate-900/90 border border-slate-800 rounded-2xl shadow-xl" dir={direction}>
       {/* Quiz Header */}
       <div className="flex items-center gap-3 mb-4">
         <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
           <HelpCircle className="w-5 h-5" />
         </div>
         <div>
-          <h3 className="text-lg font-bold text-white">اختبر فهمك للدرس (Quiz)</h3>
-          <p className="text-xs text-slate-400">سؤال سريع لترسيخ المعلومات قبل الانتقال للدرس التالي</p>
+          <h3 className="text-lg font-bold text-white">{t('اختبر فهمك للدرس (Quiz)')}</h3>
+          <p className="text-xs text-slate-400">{t('سؤال سريع لترسيخ المعلومات قبل الانتقال للدرس التالي')}</p>
         </div>
       </div>
 
@@ -67,7 +69,7 @@ export const LessonQuiz: React.FC<LessonQuizProps> = ({ quiz, onPassed }) => {
               type="button"
               disabled={isSubmitted}
               onClick={() => setSelectedOption(idx)}
-              className={`w-full text-right p-4 rounded-xl border transition flex items-center justify-between cursor-pointer ${optionStyle}`}
+              className={`w-full text-start p-4 rounded-xl border transition flex items-center justify-between cursor-pointer ${optionStyle}`}
             >
               <span className="text-sm font-medium leading-relaxed">{option}</span>
               <div className="mr-3 shrink-0">
@@ -99,7 +101,7 @@ export const LessonQuiz: React.FC<LessonQuizProps> = ({ quiz, onPassed }) => {
           disabled={selectedOption === null}
           className="w-full sm:w-auto px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
         >
-          <span>تحقق من الإجابة</span>
+          <span>{t('تحقق من الإجابة')}</span>
           <ArrowRight className="w-4 h-4" />
         </button>
       ) : (
@@ -118,7 +120,7 @@ export const LessonQuiz: React.FC<LessonQuizProps> = ({ quiz, onPassed }) => {
             )}
             <div>
               <p className="font-bold text-sm mb-1">
-                {isCorrect ? 'إجابة ممتازة وصحيحة! 🎉' : 'إجابة غير دقيقة، حاول مرة أخرى!'}
+                {isCorrect ? t('إجابة ممتازة وصحيحة! 🎉') : t('إجابة غير دقيقة، حاول مرة أخرى!')}
               </p>
               <p className="text-xs leading-relaxed opacity-90">{quiz.explanation}</p>
             </div>
@@ -129,7 +131,7 @@ export const LessonQuiz: React.FC<LessonQuizProps> = ({ quiz, onPassed }) => {
               onClick={handleRetry}
               className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-xl transition cursor-pointer"
             >
-              إعادة المحاولة
+              {t('إعادة المحاولة')}
             </button>
           )}
         </div>
@@ -137,4 +139,3 @@ export const LessonQuiz: React.FC<LessonQuizProps> = ({ quiz, onPassed }) => {
     </div>
   );
 };
-

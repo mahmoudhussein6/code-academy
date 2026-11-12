@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface SplashScreenProps {
   onFinish: () => void;
 }
 
 export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
+  const { direction, t } = useLanguage();
   const [phase, setPhase] = useState<'enter' | 'show' | 'exit'>('enter');
   const [progress, setProgress] = useState(0);
 
@@ -42,7 +44,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
       className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-slate-950 transition-opacity duration-500 ${
         phase === 'enter' ? 'opacity-0' : phase === 'exit' ? 'opacity-0' : 'opacity-100'
       }`}
-      dir="rtl"
+      dir={direction}
     >
       {/* Animated background grid */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -126,7 +128,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
             Code Academy
           </h1>
           <p className="text-slate-400 text-lg font-medium tracking-wide">
-            تعلم تطوير الويب بالعربي
+            {t('تعلم تطوير الويب بالعربي')}
           </p>
         </div>
 
@@ -155,7 +157,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
           />
         </div>
 
-        <p className="text-slate-600 text-sm">جاري التحميل...</p>
+        <p className="text-slate-600 text-sm">{t('جاري التحميل...')}</p>
       </div>
 
       <style>{`
@@ -191,4 +193,3 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
     </div>
   );
 };
-
